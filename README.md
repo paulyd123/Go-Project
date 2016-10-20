@@ -1,6 +1,2 @@
-# Go-Project
-
-#### Christopher Weir
-#### Gareth Lynskey
-#### Paul Dolan
-#### Patrick Griffin
+# Go-Web-App
+Example Web Application
