@@ -1,35 +1,41 @@
 package main
 
-import "gopkg.in/macaron.v1"
+import (
+	"gopkg.in/macaron.v1"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+)
+
+type User struct {
+	ID       bson.ObjectId `bson:"_id,omitempty"`
+	username string
+	email    string
+}
 
 func main() {
-    m := macaron.Classic()
-    m.Use(macaron.Renderer())
-<<<<<<< HEAD
-    m.Get("/hello", func() string {
-        return "Hello world!"
-    })
-m.Run()
-}
-=======
-    m.Get("/", func() string {
-        return "Hello world!"
-    })
-
-    m.Get("/reverse/:name",  func(ctx *macaron.Context) {
-    ctx.Data["Name"] = ctx.Params(":name")
-    //ctx.Data["Name"] = reverse(ctx.Params(":name"))
-    ctx.HTML(200, "hello")
-    })
-
-    m.Run()
+	m := macaron.Classic()
+	m.Use(macaron.Renderer())
+	m.Get("/test", connect)
+	m.Run()
+	m.Run()
 }
 
-/*func reverse(s string) string {
-	chars := []rune(s)
-	for i, j := 0, len(chars)-1; i < j; i, j = i+1, j-1 {
-		chars[i], chars[j] = chars[j], chars[i]
+func connect() {
+	session, err := mgo.Dial("127.0.0.1:27017")
+	if err != nil {
+		panic(err)
 	}
-	return string(chars)
-}*/
->>>>>>> origin/master
+
+	defer session.Close()
+
+	session.SetMode(mgo.Monotonic, true)
+
+	// Collection User test
+	c := session.DB("College").C("User")
+
+	// Insert
+	err = c.Insert(&User{username: "Gareth", email: "test@test.test"})
+	if err != nil {
+		panic(err)
+	}
+}
