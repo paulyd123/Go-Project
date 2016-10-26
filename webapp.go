@@ -3,20 +3,16 @@ package main
 import (
 	"gopkg.in/macaron.v1"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+    "fmt"
+    "io"
+    "net/http"
+    "os"
 )
-
-type User struct {
-	ID       bson.ObjectId `bson:"_id,omitempty"`
-	username string
-	email    string
-}
 
 func main() {
 	m := macaron.Classic()
 	m.Use(macaron.Renderer())
-	m.Get("/test", connect)
-	m.Run()
+	m.Get("/upload", uploadHandler)
 	m.Run()
 }
 
@@ -29,13 +25,35 @@ func connect() {
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
-
-	// Collection User test
-	c := session.DB("College").C("User")
-
-	// Insert
-	err = c.Insert(&User{username: "Gareth", email: "test@test.test"})
-	if err != nil {
-		panic(err)
-	}
 }
+
+
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+
+ 	// the FormFile function takes in the POST input id file
+ 	file, header, err := r.FormFile("uploadfile")
+
+ 	if err != nil {
+ 		fmt.Fprintln(w, err)
+ 		return
+ 	}
+
+ 	defer file.Close()
+
+ 	out, err := os.Create("/tmp/uploadedfile")
+ 	if err != nil {
+ 		fmt.Fprintf(w, "Unable to create the file for writing. Check your write access privilege")
+ 		return
+ 	}
+
+ 	defer out.Close()
+
+ 	// write the content from POST to the file
+ 	_, err = io.Copy(out, file)
+ 	if err != nil {
+ 		fmt.Fprintln(w, err)
+ 	}
+
+ 	fmt.Fprintf(w, "File uploaded successfully : ")
+ 	fmt.Fprintf(w, header.Filename)
+ }

@@ -29,8 +29,8 @@
 
 <body>
   <div id="header-wrap" class="header">
-    <form id="upload" enctype="multipart/form-data" action="http://127.0.0.1:4000/test" method="get">
-      <input type="file" name="uploadfile" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);" />
+    <form id="upload" enctype="multipart/form-data" action="http://127.0.0.1:4000/upload" method="get">
+      <input type="file" name="uploadfile" id="uploadfile" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);" />
       <input type="hidden" name="token" value="{{.}}" />
     </form>
   </div>
