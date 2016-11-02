@@ -29,8 +29,10 @@
 
 <body>
   <div id="header-wrap" class="header">
-    <form id="upload" enctype="multipart/form-data" method="post">
-      <input type="file" name="uploadfile" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);" />
+    <form id="upload" action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="uploadfile" id="uploadfile" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);" />
+      <input type="hidden" name="token" value="{{.}}" />
+      <input type="submit" id="sendImage" value="upload"/>
     </form>
   </div>
   <div id="container">
@@ -38,12 +40,9 @@
   </div>
 
   <form>
-    <input id="sendImage" type="button" value="Get your link!" onclick="showLink()"/><br> 
+    <input id="sendImage" type="submit" value="Get your link!" onclick="showLink"/><br>
     <input id="link" type="text" name="link" readonly>
   </form>
-
-
-
 
 </body>
 
